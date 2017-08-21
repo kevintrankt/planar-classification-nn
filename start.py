@@ -113,3 +113,74 @@ def compute_cost(A2, Y, parameters):
     cost = np.squeeze(cost)  # makes sure cost is the dimension we expect.
 
     return cost
+
+
+def backward_propagation(parameters, cache, X, Y):
+    """
+    Implement the backward propagation using the instructions above.
+
+    Arguments:
+    parameters -- python dictionary containing our parameters 
+    cache -- a dictionary containing "Z1", "A1", "Z2" and "A2".
+    X -- input data of shape (2, number of examples)
+    Y -- "true" labels vector of shape (1, number of examples)
+
+    Returns:
+    grads -- python dictionary containing your gradients with respect to different parameters
+    """
+    m = X.shape[1]
+
+
+    W1 = parameters["W1"]
+    W2 = parameters["W2"]
+    A1 = cache["A1"]
+    A2 = cache["A2"]
+
+    # Backward propagation: calculate dW1, db1, dW2, db2.
+    dZ2 = A2 - Y
+    dW2 = np.dot(dZ2, A1.T) / m
+    db2 = np.sum(dZ2, axis=1, keepdims=True) / m
+    dZ1 = np.dot(W2.T, dZ2) * (1 - np.power(A1, 2))
+    dW1 = np.dot(dZ1, X.T) / m
+    db1 = np.sum(dZ1, axis=1, keepdims=True) / m
+
+    grads = {"dW1": dW1,
+             "db1": db1,
+             "dW2": dW2,
+             "db2": db2}
+
+    return grads
+
+
+def update_parameters(parameters, grads, learning_rate=1.2):
+    """
+    Updates parameters using the gradient descent update rule given above
+
+    Arguments:
+    parameters -- python dictionary containing your parameters 
+    grads -- python dictionary containing your gradients 
+
+    Returns:
+    parameters -- python dictionary containing your updated parameters 
+    """
+    W1 = parameters["W1"]
+    b1 = parameters["b1"]
+    W2 = parameters["W2"]
+    b2 = parameters["b2"]
+    dW1 = grads["dW1"]
+    db1 = grads["db1"]
+    dW2 = grads["dW2"]
+    db2 = grads["db2"]
+
+    # Update rule for each parameter
+    W1 = W1 - learning_rate * dW1
+    b1 = b1 - learning_rate * db1
+    W2 = W2 - learning_rate * dW2
+    b2 = b2 - learning_rate * db2
+
+    parameters = {"W1": W1,
+                  "b1": b1,
+                  "W2": W2,
+                  "b2": b2}
+
+    return parameters
