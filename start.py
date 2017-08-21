@@ -6,7 +6,9 @@ import sklearn.datasets
 import sklearn.linear_model
 from planar_utils import plot_decision_boundary, sigmoid, load_planar_dataset, load_extra_datasets
 
-%matplotlib inline
+% matplotlib
+inline
+
 
 # - a numpy-array (matrix) X that contains your features (x1, x2)
 # - a numpy-array (vector) Y that contains your labels (red:0, blue:1).
@@ -27,6 +29,7 @@ def layer_sizes(X, Y):
     n_h = 4
     n_y = Y.shape[0]  # size of output layer
     return (n_x, n_h, n_y)
+
 
 def initialize_parameters(n_x, n_h, n_y):
     """
@@ -86,3 +89,27 @@ def forward_propagation(X, parameters):
              "A2": A2}
 
     return A2, cache
+
+
+def compute_cost(A2, Y, parameters):
+    """
+    Computes the cross-entropy cost given in equation (13)
+
+    Arguments:
+    A2 -- The sigmoid output of the second activation, of shape (1, number of examples)
+    Y -- "true" labels vector of shape (1, number of examples)
+    parameters -- python dictionary containing your parameters W1, b1, W2 and b2
+
+    Returns:
+    cost -- cross-entropy cost given equation (13)
+    """
+
+    m = Y.shape[1]  # number of example
+
+    # Compute the cross-entropy cost
+    logprobs = (np.multiply(np.log(A2), Y)) + (np.multiply((1 - Y), np.log(1 - A2)))
+    cost = - np.sum(logprobs) / m
+
+    cost = np.squeeze(cost)  # makes sure cost is the dimension we expect.
+
+    return cost
