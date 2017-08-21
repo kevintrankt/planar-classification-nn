@@ -225,3 +225,23 @@ def nn_model(X, Y, n_h, num_iterations=10000, print_cost=False):
             print("Cost after iteration %i: %f" % (i, cost))
 
     return parameters
+
+
+def predict(parameters, X):
+    """
+    Using the learned parameters, predicts a class for each example in X
+
+    Arguments:
+    parameters -- python dictionary containing your parameters 
+    X -- input data of size (n_x, m)
+
+    Returns
+    predictions -- vector of predictions of our model (red: 0 / blue: 1)
+    """
+
+    # Computes probabilities using forward propagation, and classifies to 0/1 using 0.5 as the threshold.
+    A2, cache = forward_propagation(X, parameters)
+    A2_flattened = np.squeeze(A2)
+    predictions = np.array([(1 if (a > 0.5) else 0) for a in A2_flattened])
+
+    return predictions
